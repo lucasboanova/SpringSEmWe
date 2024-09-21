@@ -1,38 +1,64 @@
 package br.com.alura.screenmatch.model;
 
-import java.time.DateTimeException;
-import java.time.LocalDate;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+
+@Entity
+@Table(name = "episodios")
 public class Episodio {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private Integer temporada;
     private String titulo;
     private Integer numeroEpisodio;
     private Double avaliacao;
     private LocalDate dataLancamento;
+    @ManyToOne
+    private Serie serie;
+
+    public Episodio(){}
 
     public Episodio(Integer numeroTemporada, DadosEpisodio dadosEpisodio) {
         this.temporada = numeroTemporada;
         this.titulo = dadosEpisodio.titulo();
         this.numeroEpisodio = dadosEpisodio.numeroEpisodio();
+
         try {
             this.avaliacao = Double.valueOf(dadosEpisodio.avaliacao());
         } catch (NumberFormatException ex) {
             this.avaliacao = 0.0;
         }
+
         try {
             this.dataLancamento = LocalDate.parse(dadosEpisodio.dataLancamento());
-        } catch (DateTimeException ex) {
-            this.dataLancamento = LocalDate.parse("2007-01-01");
+        } catch (DateTimeParseException ex) {
+            this.dataLancamento = null;
         }
-
     }
 
-    public String getTitulo() {
-        return titulo;
+    public Long getId() {
+        return id;
     }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Serie getSerie() {
+        return serie;
+    }
+
+    public void setSerie(Serie serie) {
+        this.serie = serie;
     }
 
     public Integer getTemporada() {
@@ -41,6 +67,14 @@ public class Episodio {
 
     public void setTemporada(Integer temporada) {
         this.temporada = temporada;
+    }
+
+    public String getTitulo() {
+        return titulo;
+    }
+
+    public void setTitulo(String titulo) {
+        this.titulo = titulo;
     }
 
     public Integer getNumeroEpisodio() {
